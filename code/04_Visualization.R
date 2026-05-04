@@ -16,8 +16,8 @@ suppressWarnings({
 # ==============================================================================
 # SETTINGS
 # ==============================================================================
-current_prefix <- "hubs_5_modules_20_genes"
-network_type <- "CALPROTECTIN" # or "GENES_ONLY"
+current_prefix <- "hubs_CLASSIC_original"
+network_type <- "GENES_ONLY" # or "CALPROTECTIN"
 
 cat("Rendering network:", network_type, "for dataset:", current_prefix, "\n")
 
