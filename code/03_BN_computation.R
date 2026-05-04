@@ -15,13 +15,11 @@ suppressWarnings({
 # ==============================================================================
 # SETTINGS (CHOOSE VARIANT)
 # ==============================================================================
-# current_hubs_file <- "hubs_CLASSIC_original.csv"
-current_hubs_file <- "hubs_5_modules_20_genes.csv"
-# current_hubs_file <- "hubs_10_modules_10_genes.csv"
-# current_hubs_file <- "hubs_20_modules_5_genes.csv"
+current_hubs_file <- "hubs_CLASSIC_original.csv"
+
 
 # R_BOOTSTRAP <- 100
-R_BOOTSTRAP <- 10
+R_BOOTSTRAP <- 100
 prefix <- gsub(".csv", "", current_hubs_file)
 
 # ==============================================================================
@@ -103,6 +101,7 @@ fit_bn_cal <- bn.fit(cons_bn_cal, data = bn_data_cal)
 saveRDS(cons_bn_cal, here("results", paste0("BN_CALPROTECTIN_structure_", prefix, ".rds")))
 saveRDS(fit_bn_cal, here("results", paste0("BN_CALPROTECTIN_fitted_", prefix, ".rds")))
 saveRDS(boot_cal, here("results", paste0("BN_CALPROTECTIN_boot_", prefix, ".rds")))
+
 
 stopCluster(cl)
 

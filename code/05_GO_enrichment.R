@@ -13,8 +13,8 @@ suppressWarnings({
 })
 
 # Settings
-current_prefix <- "hubs_5_modules_20_genes"
-network_type <- "CALPROTECTIN" 
+current_prefix <- "hubs_CLASSIC_original"
+network_type <- "GENES_ONLY" 
 
 cat("--- Running Script 05: GO Analysis ---\n")
 
@@ -35,7 +35,7 @@ cat("Number of genes in the strict network for GO analysis:", length(bn_strict_g
 ego_bn <- enrichGO(gene          = bn_strict_genes,
                    keyType       = "SYMBOL",
                    OrgDb         = org.Hs.eg.db,
-                   ont           = "BP", # Biological Process
+                   ont           = "CC", # Cellular component
                    pAdjustMethod = "BH",
                    pvalueCutoff  = 0.05,
                    qvalueCutoff  = 0.2)

@@ -15,7 +15,7 @@ suppressWarnings({
   })
 })
 
-current_prefix <- "hubs_5_modules_20_genes"
+current_prefix <- "hubs_CLASSIC_original"
 cat("--- Running Script 06: Validation and Prediction ---\n")
 
 # 1. Load trained model and training data (Israel)

@@ -101,7 +101,7 @@ generate_hubs <- function(min_size, cut_height, num_mods, genes_per_mod, prefix,
 }
 
 # ==============================================================================
-# EXECUTION OF ALL VARIANTS
+# EXECUTION OF HUB GENES
 # ==============================================================================
 
 # 1. ORIGINAL NETWORK AND 5x20 VARIANT (Standard WGCNA parameters)
@@ -110,14 +110,6 @@ net_base <- generate_hubs(min_size = 20, cut_height = 0.20, num_mods = NULL, gen
 
 generate_hubs(min_size = 20, cut_height = 0.20, num_mods = 5, genes_per_mod = 20, 
               prefix = "hubs_5_modules_20_genes", rank_by_calprotectin = TRUE)
-
-# 2. 10x10 VARIANT (Higher granularity)
-generate_hubs(min_size = 10, cut_height = 0.15, num_mods = 10, genes_per_mod = 10, 
-              prefix = "hubs_10_modules_10_genes", rank_by_calprotectin = TRUE)
-
-# 3. 20x5 VARIANT (Small clusters / Micro-modules)
-generate_hubs(min_size = 5, cut_height = 0.10, num_mods = 20, genes_per_mod = 5, 
-              prefix = "hubs_20_modules_5_genes", rank_by_calprotectin = TRUE)
 
 
 # ==============================================================================
