@@ -1,0 +1,70 @@
+# Установка bnlearn
+
+```r
+# Устанавливаем библиотеку для работы с архивами, если её нет
+if (!require("devtools")) install.packages("devtools")
+
+# Устанавливаем версию 5.0, которая еще поддерживает R 4.3
+devtools::install_version("bnlearn", version = "5.0",
+                           repos = "http://cran.us.r-project.org")
+
+# Попробуем установить версию из архива, которая точно подходит под R 4.3
+install.packages(
+  "https://cran.r-project.org/src/contrib/Archive/bnlearn/bnlearn_4.9.tar.gz",
+  repos = NULL, type = "source"
+)
+
+BiocManager::install(c("graph", "Rgraphviz", "RBGL"))
+```
+
+---
+
+# Установка clusterProfiler на R 4.3.3 / Ubuntu 24.04 / Bioconductor 3.18
+
+## Корень проблем
+
+| Пакет | Проблема |
+|---|---|
+| `treeio 1.26.0` | Баг: `object 'random_ref' not found` — сломана версия в Bioconductor 3.18 |
+| `ggtree 3.10.1` | Аналогичный баг в Bioconductor 3.18 |
+| `fgsea 1.28.0` | Не компилируется: `BH 1.87` требует C++14, а fgsea собирается с C++11 |
+
+## Рабочий скрипт установки
+
+```r
+# Шаг 1: нужные инструменты
+if (!require("remotes")) install.packages("remotes")
+if (!require("BiocManager")) install.packages("BiocManager")
+
+# Шаг 2: treeio и ggtree — с GitHub, минуя сломанный Bioconductor 3.18
+remotes::install_github("YuLab-SMU/yulab.utils")
+remotes::install_github("YuLab-SMU/ggfun")
+remotes::install_github("YuLab-SMU/treeio")
+remotes::install_github("YuLab-SMU/ggtree")
+
+# Шаг 3: fgsea — с GitHub, там пофикшена совместимость с BH 1.87
+remotes::install_github("ctlab/fgsea")
+
+# Шаг 4: оставшиеся зависимости и сам clusterProfiler
+BiocManager::install(c("GOSemSim", "DOSE", "enrichplot", "clusterProfiler"),
+                     force = TRUE)
+```
+
+## Почему именно так
+
+- `treeio` и `ggtree` берём с GitHub: там исправленный код, которого ещё нет
+  в релизе Bioconductor 3.18.
+- `fgsea` берём с GitHub `ctlab/fgsea`: там уже влит фикс совместимости с `BH 1.87`.
+- `yulab.utils` и `ggfun` ставим заранее с GitHub, потому что `ggtree` от них
+  зависит и может подтянуть старые версии из Bioconductor.
+- `GOSemSim`, `DOSE`, `enrichplot`, `clusterProfiler` — в Bioconductor 3.18
+  проблем нет, ставятся штатно после того, как зависимости выше уже в порядке.
+
+## На будущее: быстрая проверка, нужен ли GitHub
+
+Если на новом сервере установка упала — смотришь на первый `ERROR` в логе:
+
+- `object '...' not found` при загрузке →
+  ставить тот пакет с GitHub **YuLab-SMU**.
+- `compilation failed` + упоминание `BH` / `Boost.Math requires C++14` →
+  ставить `fgsea` с **ctlab/fgsea** на GitHub.
