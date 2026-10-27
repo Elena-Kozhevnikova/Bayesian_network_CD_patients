@@ -81,14 +81,25 @@ generate_hubs <- function(min_size, cut_height, num_mods, genes_per_mod, prefix,
     
     # Calculate integrated hub score
     hub_score <- scale(mod_connectivity) + scale(abs(mod_kME)) + scale(rowMeans(abs(gs)))
-    top_genes <- mod_genes[order(hub_score, decreasing = TRUE)[1:min(genes_per_mod, length(mod_genes))]]
+
+    # Exclude outliers in ANY score component (1.5 × IQR)
+    scores <- cbind(mod_connectivity, abs(mod_kME), rowMeans(abs(gs)))
+    outlier <- apply(scores, 2, function(x) {
+      q <- quantile(x, c(0.25, 0.75), na.rm = TRUE)
+      !is.finite(x) | x < q[1] - 1.5 * diff(q) | x > q[2] + 1.5 * diff(q)
+    })
+    eligible <- which(rowSums(outlier) == 0 & is.finite(as.numeric(hub_score)))
+    ranked <- eligible[order(hub_score[eligible], decreasing = TRUE)]
+    top_genes <- mod_genes[head(ranked, genes_per_mod)]
+
+    if (length(top_genes) == 0L) return(NULL)
     
     data.frame(
       gene = top_genes, 
       module = mod, 
       kWithin = kIN[top_genes, "kWithin"],
-      kME = cor(datExpr[, top_genes], MEs[, paste0("ME", mod)]),
-      GS = rowMeans(abs(cor(datExpr[, top_genes], traitMatrix)))
+      kME = cor(datExpr[, top_genes, drop = FALSE], MEs[, paste0("ME", mod)]),
+      GS = rowMeans(abs(cor(datExpr[, top_genes, drop = FALSE], traitMatrix)))
     )
   }))
   
